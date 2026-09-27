@@ -62,3 +62,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+// Handle Teacher/Staff Registration Submission
+const registerForm =
+  document.getElementById("registerForm") || document.querySelector("form");
+
+if (registerForm) {
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault(); // Stop standard form refresh
+
+    // Gather form data
+    const formData = new FormData(registerForm);
+    const data = Object.fromEntries(formData.entries());
+
+    // Handle checkboxes for subjects if multiple are selected
+    const selectedSubjects = [];
+    document
+      .querySelectorAll('input[name="subjects"]:checked')
+      .forEach((cb) => {
+        selectedSubjects.push(cb.value);
+      });
+    data.subjects = selectedSubjects;
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Staff account registered successfully!");
+        window.location.href = "/login.html"; // Redirect to login page or dashboard
+      } else {
+        alert("Registration failed: " + (result.error || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Error submitting registration:", err);
+      alert("Network error. Please try again.");
+    }
+  });
+}

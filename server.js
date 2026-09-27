@@ -60,3 +60,46 @@ app.get("/api/subjects", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+// API: Register Staff/Teacher
+app.post("/api/register", async (req, res) => {
+  try {
+    const {
+      full_name,
+      email,
+      password,
+      staff_role,
+      teaching_level,
+      school_placement,
+      subjects,
+    } = req.body;
+
+    // Simple insert query (Note: In production, hash passwords with bcrypt!)
+    const query = `
+            INSERT INTO staff (full_name, email, password, staff_role, teaching_level, school_placement, subjects_taught)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id, full_name, email;
+        `;
+
+    const values = [
+      full_name,
+      email,
+      password,
+      staff_role,
+      teaching_level,
+      school_placement,
+      subjects,
+    ];
+    const result = await pool.query(query, values);
+
+    res
+      .status(201)
+      .json({ message: "User registered successfully", user: result.rows[0] });
+  } catch (err) {
+    console.error("Registration error:", err.message);
+    res
+      .status(500)
+      .json({
+        error: "Server error during registration. Email might already exist.",
+      });
+  }
+});
