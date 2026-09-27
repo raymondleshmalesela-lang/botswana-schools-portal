@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Dashboard - Botswana Schools Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #006633;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #006633;
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #006633;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004d26;
+      }
+      .forum-post {
+        background: #f9f9f9;
+        padding: 10px;
+        border-left: 3px solid #006633;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Teacher Portal</h2>
+      <div>
+        <span id="teacherNameDisplay">Welcome, Teacher</span> |
+        <a
+          href="index.html"
+          style="color: white; text-decoration: underline"
+          onclick="localStorage.clear()"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <!-- 1. Enter marks for students -->
+        <div class="card">
+          <h3>Student Marks Entry</h3>
+          <p>Input and update academic marks for students[cite: 1].</p>
+          <form id="marksEntryForm">
+            <label>Select Class / Subject:</label>
+            <select id="marksClass" required>
+              <option value="">-- Choose Class --</option>
+              <option value="Form 1 Mathematics">Form 1 Mathematics</option>
+              <option value="Form 2 Science">Form 2 Science</option>
+            </select>
+            <label>Student Identifier:</label>
+            <input
+              type="text"
+              id="studentIdentifier"
+              placeholder="Student Name or ID"
+              required
+            />
+            <label>Assessment Type:</label>
+            <select id="assessmentType" required>
+              <option value="Mid-Term">Mid-Term Exam</option>
+              <option value="End-Term">End-Term Exam</option>
+              <option value="Assignment">Assignment</option>
+            </select>
+            <label>Grade / Score:</label>
+            <input
+              type="text"
+              id="studentScore"
+              placeholder="e.g., A or 85%"
+              required
+            />
+            <button type="submit">Save Marks</button>
+          </form>
+        </div>
+
+        <!-- 2. Upload assignments/ tests/notes -->
+        <div class="card">
+          <h3>Upload Assignments & Notes</h3>
+          <p>
+            Publish study content, tests, and homework sheets for students[cite:
+            1].
+          </p>
+          <form id="uploadMaterialForm">
+            <label>Target Class:</label>
+            <select id="uploadClass" required>
+              <option value="">-- Choose Class --</option>
+              <option value="Form 1 Mathematics">Form 1 Mathematics</option>
+              <option value="Form 2 Science">Form 2 Science</option>
+            </select>
+            <label>Title / Description:</label>
+            <input
+              type="text"
+              id="materialTitle"
+              placeholder="e.g., Chapter 3 Worksheet"
+              required
+            />
+            <label>Select File:</label>
+            <input type="file" id="materialFile" required />
+            <button type="submit">Upload Material</button>
+          </form>
+        </div>
+
+        <!-- 3. Make announcements -->
+        <div class="card">
+          <h3>Announcements</h3>
+          <p>
+            Publish notices and updates for students and classrooms[cite: 1].
+          </p>
+          <form id="announcementForm">
+            <label>Target Audience:</label>
+            <select id="announcementAudience">
+              <option value="My Classes">My Classes</option>
+              <option value="Whole School">Whole School</option>
+            </select>
+            <label>Message:</label>
+            <textarea
+              id="announcementText"
+              rows="3"
+              placeholder="Type announcement here..."
+              required
+            ></textarea>
+            <button type="submit">Post Announcement</button>
+          </form>
+        </div>
+
+        <!-- 4. Hold discussions in discussion forum -->
+        <div class="card">
+          <h3>Discussion Forum</h3>
+          <p>
+            Interact with students and colleagues via subject and class
+            forums[cite: 1].
+          </p>
+          <div
+            id="forumFeed"
+            style="max-height: 140px; overflow-y: auto; margin-bottom: 10px"
+          >
+            <div class="forum-post">
+              <strong>System:</strong> Welcome to the active teacher-student
+              discussion channel.
+            </div>
+          </div>
+          <form id="forumForm">
+            <input
+              type="text"
+              id="forumInput"
+              placeholder="Type your message..."
+              required
+            />
+            <button type="submit">Post Message</button>
+          </form>
+        </div>
+
+        <!-- 5. Apply for Transfer -->
+        <div class="card" style="grid-column: 1 / -1">
+          <h3>Apply for Transfer</h3>
+          <p>
+            Submit a formal transfer request complying with institutional tier
+            policies[cite: 1].
+          </p>
+          <form
+            id="transferForm"
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px"
+          >
+            <div>
+              <label>Current School Placement:</label>
+              <input
+                type="text"
+                value="Gaborone Secondary School"
+                readonly
+                style="background: #e9ecef"
+              />
+              <label>Justification for Transfer:</label>
+              <textarea
+                rows="3"
+                placeholder="Reason for transfer application..."
+                required
+              ></textarea>
+            </div>
+            <div>
+              <label>Preferred Destination School:</label>
+              <select required>
+                <option value="">-- Select Target School --</option>
+                <option value="Naledi Senior Secondary">
+                  Naledi Senior Secondary School
+                </option>
+                <option value="Palapye Junior Secondary">
+                  Palapye Junior Secondary School
+                </option>
+              </select>
+              <button type="submit" style="margin-top: 28px">
+                Submit Transfer Application
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.username) {
+        document.getElementById("teacherNameDisplay").innerText =
+          `Welcome, ${user.username}`;
+      }
+
+      document
+        .getElementById("marksEntryForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Student marks entered successfully!");
+        });
+
+      document
+        .getElementById("uploadMaterialForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Assignment/Notes uploaded successfully!");
+        });
+
+      document
+        .getElementById("announcementForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Announcement broadcasted successfully!");
+        });
+
+      document
+        .getElementById("forumForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Forum message posted!");
+        });
+
+      document
+        .getElementById("transferForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Transfer request submitted to regional administration.");
+        });
+    </script>
+  </body>
+</html>

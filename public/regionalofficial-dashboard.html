@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regional Official Dashboard - Botswana Schools Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #006633;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #006633;
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #006633;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004d26;
+      }
+      .stat-box {
+        background: #eef9f2;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        border-left: 4px solid #006633;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Regional Administration Portal</h2>
+      <div>
+        <span id="regionalNameDisplay">Welcome, Regional Official</span> |
+        <a
+          href="index.html"
+          style="color: white; text-decoration: underline"
+          onclick="localStorage.clear()"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <!-- 4. Total students in the region / teachers available & Auto-generated statistics -->
+        <div class="card">
+          <h3>Regional Statistics & Overview</h3>
+          <p>
+            Automatically generated statistics and records for the region[cite:
+            1].
+          </p>
+          <div class="stat-box">
+            <strong>Total Students in Region:</strong> 14,850[cite: 1]<br />
+            <strong>Available Teachers:</strong> 820[cite: 1]<br />
+            <strong>Active Schools:</strong> 42 Institutions
+          </div>
+        </div>
+
+        <!-- 1. Resource allocation (books and teaching aid) -->
+        <div class="card">
+          <h3>Resource Allocation</h3>
+          <p>
+            Manage and distribute books and teaching aids across schools[cite:
+            1].
+          </p>
+          <form id="resourceForm">
+            <label>Target School:</label>
+            <select required>
+              <option value="">-- Select School --</option>
+              <option value="Gaborone Secondary">
+                Gaborone Secondary School
+              </option>
+              <option value="Naledi Senior Secondary">
+                Naledi Senior Secondary School
+              </option>
+            </select>
+            <label>Resource Type:</label>
+            <select required>
+              <option value="Textbooks">Textbooks</option>
+              <option value="Teaching Aids">
+                Teaching Aids / Lab Equipment
+              </option>
+            </select>
+            <label>Quantity:</label>
+            <input type="number" placeholder="e.g. 150" required />
+            <button type="submit">Allocate Resources</button>
+          </form>
+        </div>
+
+        <!-- 2 & 5. Records of Transfers & Approves Head Teachers/Teachers Transfers -->
+        <div class="card">
+          <h3>Transfer Management & Records</h3>
+          <p>
+            Review records of transfers in and out of the region and approve
+            head teachers/teachers transfers[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Staff / Official</th>
+                <th>Current School</th>
+                <th>Destination</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mr. J. Kaelo (Head Teacher)</td>
+                <td>Molepolole Sec.</td>
+                <td>Gaborone Sec.</td>
+                <td>
+                  <button onclick="alert('Transfer Approved')">Approve</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Ms. P. Dube (Teacher)</td>
+                <td>Palapye Junior</td>
+                <td>Naledi Senior</td>
+                <td>
+                  <button onclick="alert('Transfer Approved')">Approve</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. School performances across the region -->
+        <div class="card" style="grid-column: 1 / -1">
+          <h3>Regional School Performances</h3>
+          <p>
+            Inspect academic performance metrics across all schools in the
+            region[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>School Name</th>
+                <th>Tier</th>
+                <th>Average Pass Rate</th>
+                <th>Performance Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Gaborone Secondary School</td>
+                <td>Senior Secondary</td>
+                <td>92.1%</td>
+                <td>Exceeding Target</td>
+              </tr>
+              <tr>
+                <td>Naledi Senior Secondary School</td>
+                <td>Senior Secondary</td>
+                <td>88.5%</td>
+                <td>Satisfactory</td>
+              </tr>
+              <tr>
+                <td>Tlokweng Junior Secondary</td>
+                <td>Junior Secondary</td>
+                <td>84.2%</td>
+                <td>Satisfactory</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.username) {
+        document.getElementById("regionalNameDisplay").innerText =
+          `Welcome, ${user.username}`;
+      }
+
+      document
+        .getElementById("resourceForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Educational resources allocated successfully.");
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parent Dashboard - Botswana Schools Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #006633;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #006633;
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #006633;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004d26;
+      }
+      .announcement-item {
+        background: #eef9f2;
+        padding: 10px;
+        border-left: 4px solid #006633;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Parent Portal</h2>
+      <div>
+        <span id="parentNameDisplay">Welcome, Parent</span> |
+        <a
+          href="index.html"
+          style="color: white; text-decoration: underline"
+          onclick="localStorage.clear()"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <!-- 1 & 2. View Students Marks & Download Report -->
+        <div class="card">
+          <h3>Student Academic Performance</h3>
+          <p>
+            View your child's academic marks and download official term
+            reports[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Assessment</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mathematics</td>
+                <td>Mid-Term</td>
+                <td>A</td>
+              </tr>
+              <tr>
+                <td>Science</td>
+                <td>Mid-Term</td>
+                <td>B+</td>
+              </tr>
+              <tr>
+                <td>English</td>
+                <td>Mid-Term</td>
+                <td>A</td>
+              </tr>
+            </tbody>
+          </table>
+          <button
+            style="margin-top: 15px"
+            onclick="alert('Downloading official student report card...')"
+          >
+            Download Report (PDF)
+          </button>
+        </div>
+
+        <!-- 4 & 5. Make Payments & Get Downloadable Receipt -->
+        <div class="card">
+          <h3>School Fees & Payments</h3>
+          <p>
+            Pay school fees online and download official payment receipts[cite:
+            1].
+          </p>
+          <form id="paymentForm">
+            <label>Student Name / ID:</label>
+            <input
+              type="text"
+              value="Thabo Moloi (Form 3)"
+              readonly
+              style="background: #e9ecef"
+            />
+            <label>Payment Amount (Pula):</label>
+            <input type="number" placeholder="e.g. 1200" required />
+            <button type="submit">Proceed to Payment</button>
+          </form>
+          <button
+            style="background-color: #333; margin-top: 10px"
+            onclick="alert('Downloading official payment receipt...')"
+          >
+            Download Last Receipt
+          </button>
+        </div>
+
+        <!-- 6. Apply for a Student Transfer -->
+        <div class="card">
+          <h3>Student Transfer Application</h3>
+          <p>
+            Apply for a transfer to another school within the permitted tier
+            rules[cite: 1].
+          </p>
+          <form id="parentTransferForm">
+            <label>Select Child:</label>
+            <select required>
+              <option value="">-- Choose Student --</option>
+              <option value="1">Thabo Moloi (Form 3)</option>
+            </select>
+            <label>Target School:</label>
+            <select required>
+              <option value="">-- Choose Target School --</option>
+              <option value="Gaborone Secondary">
+                Gaborone Secondary School
+              </option>
+              <option value="Naledi Senior Secondary">
+                Naledi Senior Secondary School
+              </option>
+            </select>
+            <label>Reason for Transfer:</label>
+            <textarea
+              rows="2"
+              placeholder="Provide justification..."
+              required
+            ></textarea>
+            <button type="submit">Submit Transfer Request</button>
+          </form>
+        </div>
+
+        <!-- 7. View Available Spaces Across Regions and Schools -->
+        <div class="card">
+          <h3>Regional School Spaces</h3>
+          <p>
+            Check available enrollment spaces across different regions and
+            institutions[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>School</th>
+                <th>Available Spaces</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>South-East</td>
+                <td>Gaborone Secondary</td>
+                <td>15 Spaces</td>
+              </tr>
+              <tr>
+                <td>Central</td>
+                <td>Palapye Junior Secondary</td>
+                <td>8 Spaces</td>
+              </tr>
+              <tr>
+                <td>Kweneng</td>
+                <td>Molepolole Senior Sec.</td>
+                <td>22 Spaces</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. Get Meeting Announcements -->
+        <div class="card" style="grid-column: 1 / -1">
+          <h3>Parent-Teacher Meeting Announcements</h3>
+          <div class="announcement-item">
+            <strong>Parent-Teacher Association (PTA):</strong> General meeting
+            scheduled for this coming Friday at 14:00 hrs in the main school
+            hall[cite: 1]. All parents are urged to attend.
+          </div>
+          <div class="announcement-item">
+            <strong>Form 3 Guidance Office:</strong> Progress report
+            consultations will be held next week Tuesday. Booking sheets are now
+            open.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.username) {
+        document.getElementById("parentNameDisplay").innerText =
+          `Welcome, ${user.username}`;
+      }
+
+      document
+        .getElementById("paymentForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Payment processed successfully! Receipt generated.");
+        });
+
+      document
+        .getElementById("parentTransferForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert(
+            "Student transfer application submitted successfully for review.",
+          );
+        });
+    </script>
+  </body>
+</html>

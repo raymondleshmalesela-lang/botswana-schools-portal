@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internal Staff Admin Portal - Botswana Schools Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #006633;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #006633;
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #006633;
+        color: white;
+        border: none;
+        padding: 12px;
+        width: 100%;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004d26;
+      }
+      .checkbox-group {
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        background: #fff;
+      }
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+      .checkbox-item input {
+        width: auto;
+        margin-right: 10px;
+        margin-bottom: 0;
+      }
+      .switch-link {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+      .switch-link a {
+        color: #006633;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .switch-link a:hover {
+        text-decoration: underline;
+      }
+      .error-msg {
+        color: #d9534f;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .success-msg {
+        color: #5cb85c;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Staff Admin & Management Portal</h2>
+      <div>
+        <a href="index.html" style="color: white; text-decoration: underline"
+          >Public Citizen Portal</a
+        >
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Login Card -->
+      <div class="card" id="loginCard">
+        <h3>Staff Login</h3>
+        <div id="adminLoginMsg" class="error-msg"></div>
+        <form id="adminLoginForm">
+          <label>Email Address:</label>
+          <input
+            type="email"
+            id="adminEmail"
+            placeholder="e.g. staff@gov.bw"
+            required
+          />
+
+          <label>Password:</label>
+          <input
+            type="password"
+            id="adminPassword"
+            placeholder="Enter password"
+            required
+          />
+
+          <button type="submit">Log In to Staff Portal</button>
+        </form>
+        <div class="switch-link">
+          Don't have a staff account?
+          <a href="#" onclick="toggleAuthForms()">Register new staff account</a>
+        </div>
+      </div>
+
+      <!-- Registration Card -->
+      <div class="card" id="registerCard" style="display: none">
+        <h3>Staff Registration</h3>
+        <div id="adminRegMsg"></div>
+        <form id="adminRegisterForm">
+          <label>Full Name:</label>
+          <input
+            type="text"
+            id="regName"
+            placeholder="e.g. Mompati Tau"
+            required
+          />
+
+          <label>Email Address:</label>
+          <input
+            type="email"
+            id="regEmail"
+            placeholder="e.g. mompati@gov.bw"
+            required
+          />
+
+          <label>Password:</label>
+          <input
+            type="password"
+            id="regPassword"
+            placeholder="Create secure password"
+            required
+          />
+
+          <label>Staff Role:</label>
+          <select id="regRole" required>
+            <option value="teacher">Teacher</option>
+            <option value="head_teacher">Head Teacher</option>
+            <option value="regional_admin">Regional Administrator</option>
+            <option value="ministry_official">Ministry Official</option>
+          </select>
+
+          <label>Teaching Level:</label>
+          <select id="regLevel" onchange="updateSubjectsAndSchools()" required>
+            <option value="">-- Select Education Level --</option>
+            <option value="primary">Primary Level</option>
+            <option value="secondary">Secondary Level</option>
+          </select>
+
+          <label>Assigned School Placement:</label>
+          <select id="regSchool" required>
+            <option value="">-- Select Level First --</option>
+          </select>
+
+          <label>Subjects Taught (Select all that apply):</label>
+          <div class="checkbox-group" id="subjectCheckboxes">
+            <small style="color: #666">Select teaching level first</small>
+          </div>
+
+          <button type="submit">Register Staff Account</button>
+        </form>
+        <div class="switch-link">
+          Already registered?
+          <a href="#" onclick="toggleAuthForms()">Login here</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let allSchools = [];
+      let allSubjects = [];
+
+      async function fetchInitialData() {
+        try {
+          const [schoolsRes, subjectsRes] = await Promise.all([
+            fetch("/api/schools"),
+            fetch("/api/subjects"),
+          ]);
+          allSchools = await schoolsRes.json();
+          allSubjects = await subjectsRes.json();
+
+          updateSubjectsAndSchools();
+        } catch (err) {
+          console.error("Failed to load portal configuration data", err);
+          document.getElementById("subjectCheckboxes").innerHTML =
+            '<p style="color:red; font-size:12px;">Server connection failed. Ensure Node.js is running.</p>';
+        }
+      }
+      fetchInitialData();
+
+      function toggleAuthForms() {
+        const loginCard = document.getElementById("loginCard");
+        const registerCard = document.getElementById("registerCard");
+        if (loginCard.style.display === "none") {
+          loginCard.style.display = "block";
+          registerCard.style.display = "none";
+        } else {
+          loginCard.style.display = "none";
+          registerCard.style.display = "block";
+        }
+      }
+
+      function updateSubjectsAndSchools() {
+        const level = document.getElementById("regLevel").value;
+        const schoolSelect = document.getElementById("regSchool");
+        const subjectContainer = document.getElementById("subjectCheckboxes");
+
+        if (!level) {
+          schoolSelect.innerHTML =
+            '<option value="">-- Select Level First --</option>';
+          subjectContainer.innerHTML =
+            '<small style="color: #666;">Select teaching level first</small>';
+          return;
+        }
+
+        if (allSchools.length > 0) {
+          const filteredSchools = allSchools.filter((s) => {
+            if (level === "primary")
+              return s.school_type.toLowerCase().includes("primary");
+            if (level === "secondary")
+              return (
+                s.school_type.toLowerCase().includes("secondary") ||
+                s.school_type.toLowerCase().includes("junior") ||
+                s.school_type.toLowerCase().includes("senior")
+              );
+            return true;
+          });
+
+          if (filteredSchools.length > 0) {
+            schoolSelect.innerHTML =
+              '<option value="">-- Choose School Placement --</option>' +
+              filteredSchools
+                .map(
+                  (s) =>
+                    `<option value="${s.school_id}">${s.school_name} (${s.school_type} - ${s.region})</option>`,
+                )
+                .join("");
+          } else {
+            schoolSelect.innerHTML =
+              '<option value="">-- No schools found for this level --</option>';
+          }
+        }
+
+        if (allSubjects.length > 0) {
+          const filteredSubjects = allSubjects.filter((sub) => {
+            const subLevel = sub.education_level.toLowerCase();
+            if (level === "primary") return subLevel.includes("primary");
+            if (level === "secondary")
+              return (
+                subLevel.includes("secondary") ||
+                subLevel.includes("junior") ||
+                subLevel.includes("senior")
+              );
+            return false;
+          });
+
+          if (filteredSubjects.length === 0) {
+            subjectContainer.innerHTML =
+              '<p style="color:red; font-size:12px;">No subjects available for this level in database.</p>';
+            return;
+          }
+
+          subjectContainer.innerHTML = filteredSubjects
+            .map(
+              (sub) => `
+                <div class="checkbox-item">
+                    <input type="checkbox" name="teacher_subject" value="${sub.subject_name}" id="tsub_${sub.subject_id}">
+                    <label for="tsub_${sub.subject_id}" style="margin:0; font-weight:normal;">${sub.subject_name}</label>
+                </div>
+            `,
+            )
+            .join("");
+        } else {
+          subjectContainer.innerHTML =
+            '<p style="color:red; font-size:12px;">Loading subjects database...</p>';
+        }
+      }
+
+      document
+        .getElementById("adminLoginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const email = document.getElementById("adminEmail").value;
+          const password = document.getElementById("adminPassword").value;
+          const msg = document.getElementById("adminLoginMsg");
+
+          try {
+            const res = await fetch("/api/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+              const allowedRoles = [
+                "teacher",
+                "head_teacher",
+                "regional_admin",
+                "ministry_official",
+              ];
+              if (allowedRoles.includes(data.user.role)) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                window.location.href = data.redirect;
+              } else {
+                msg.innerText =
+                  "Access Denied: Citizen accounts must log in via the Public Portal.";
+              }
+            } else {
+              msg.innerText = data.error;
+            }
+          } catch (err) {
+            msg.innerText = "Server connection failed.";
+          }
+        });
+
+      document
+        .getElementById("adminRegisterForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const msg = document.getElementById("adminRegMsg");
+
+          const selectedSubjects = Array.from(
+            document.querySelectorAll('input[name="teacher_subject"]:checked'),
+          ).map((cb) => cb.value);
+
+          const payload = {
+            username: document.getElementById("regName").value,
+            email: document.getElementById("regEmail").value,
+            password: document.getElementById("regPassword").value,
+            role: document.getElementById("regRole").value,
+            school_id: document.getElementById("regSchool").value,
+            teaching_level: document.getElementById("regLevel").value,
+            subjects: selectedSubjects,
+          };
+
+          try {
+            const res = await fetch("/api/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (res.ok) {
+              msg.className = "success-msg";
+              msg.innerText =
+                "Staff registration successful! You can now log in.";
+              setTimeout(() => toggleAuthForms(), 1500);
+            } else {
+              msg.className = "error-msg";
+              msg.innerText = data.error;
+            }
+          } catch (err) {
+            msg.className = "error-msg";
+            msg.innerText = "Server connection failed.";
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard - Botswana Schools Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #006633;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #006633;
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      button {
+        background-color: #006633;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004d26;
+      }
+      .announcement-item {
+        background: #eef9f2;
+        padding: 10px;
+        border-left: 4px solid #006633;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Student Portal</h2>
+      <div>
+        <span id="studentNameDisplay">Welcome, Student</span> |
+        <a
+          href="index.html"
+          style="color: white; text-decoration: underline"
+          onclick="localStorage.clear()"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <!-- 1. Marks & 5. Downloadable Report Card -->
+        <div class="card">
+          <h3>Academic Performance & Reports</h3>
+          <p>
+            View your marks and download your comprehensive term report showing
+            all subject grades and overall grade[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Test/Exam</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody id="marksTableBody">
+              <tr>
+                <td>Mathematics</td>
+                <td>Mid-Term</td>
+                <td>A</td>
+              </tr>
+              <tr>
+                <td>English</td>
+                <td>Mid-Term</td>
+                <td>B+</td>
+              </tr>
+              <tr>
+                <td>Science</td>
+                <td>Mid-Term</td>
+                <td>A</td>
+              </tr>
+            </tbody>
+          </table>
+          <button style="margin-top: 15px" onclick="downloadReport()">
+            Download Official Report (PDF)
+          </button>
+        </div>
+
+        <!-- 2. Register for New Term & Subject Selection -->
+        <div class="card">
+          <h3>New Term Registration</h3>
+          <p>
+            Select your subjects and register for the upcoming term[cite: 1].
+          </p>
+          <form id="termRegForm">
+            <div style="margin-bottom: 10px">
+              <label>Select Form / Grade Level:</label>
+              <select
+                id="regGradeLevel"
+                style="width: 100%; padding: 8px; margin-top: 5px"
+              >
+                <option value="Form 1">Form 1</option>
+                <option value="Form 2">Form 2</option>
+                <option value="Form 3">Form 3</option>
+                <option value="Form 4">Form 4</option>
+                <option value="Form 5">Form 5</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 10px">
+              <label>Choose Term:</label>
+              <select
+                id="regTermSelection"
+                style="width: 100%; padding: 8px; margin-top: 5px"
+              >
+                <option value="Term 1">Term 1</option>
+                <option value="Term 2">Term 2</option>
+                <option value="Term 3">Term 3</option>
+              </select>
+            </div>
+            <button type="submit">Submit Term Registration</button>
+          </form>
+        </div>
+
+        <!-- 3. Download Notes and Assignments -->
+        <div class="card">
+          <h3>Notes & Assignments</h3>
+          <p>Access study materials uploaded by your teachers[cite: 1].</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Title</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mathematics</td>
+                <td>Algebra Worksheet 1</td>
+                <td>
+                  <button onclick="alert('Downloading...')">Download</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Science</td>
+                <td>Photosynthesis Notes</td>
+                <td>
+                  <button onclick="alert('Downloading...')">Download</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 4. Attendance Timetable (Day 1 to Day 5, 40-min periods) -->
+        <div class="card">
+          <h3>Class Attendance & Timetable</h3>
+          <p>
+            Your 5-day cycle timetable with 40-minute periods (Maths & Sciences
+            scheduled twice per cycle)[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Period 1 (40m)</th>
+                <th>Period 2 (40m)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Day 1</td>
+                <td>Mathematics</td>
+                <td>English</td>
+              </tr>
+              <tr>
+                <td>Day 2</td>
+                <td>Science</td>
+                <td>Setswana</td>
+              </tr>
+              <tr>
+                <td>Day 3</td>
+                <td>Mathematics</td>
+                <td>Agriculture</td>
+              </tr>
+              <tr>
+                <td>Day 4</td>
+                <td>Science</td>
+                <td>Design & Tech</td>
+              </tr>
+              <tr>
+                <td>Day 5</td>
+                <td>English</td>
+                <td>Physical Education</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 6. Announcements -->
+        <div class="card" style="grid-column: 1 / -1">
+          <h3>School Announcements</h3>
+          <div class="announcement-item">
+            <strong>Ministry of Education:</strong> School opening dates for the
+            new academic term have been confirmed. Please complete your term
+            registration online[cite: 1].
+          </div>
+          <div class="announcement-item">
+            <strong>Sports Department:</strong> Inter-school athletics trials
+            commence next Tuesday on the main grounds.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load student details from local storage session if available
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.username) {
+        document.getElementById("studentNameDisplay").innerText =
+          `Welcome, ${user.username}`;
+      }
+
+      function downloadReport() {
+        alert(
+          "Generating official academic report containing all subjects and overall grade...",
+        );
+      }
+
+      document
+        .getElementById("termRegForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert(
+            "Term registration and subject selection submitted successfully!",
+          );
+        });
+    </script>
+  </body>
+</html>

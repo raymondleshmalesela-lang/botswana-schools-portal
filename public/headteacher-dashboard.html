@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Head Teacher Dashboard - Botswana Schools Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #006633;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #006633;
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #006633;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004d26;
+      }
+      .stat-box {
+        background: #eef9f2;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        border-left: 4px solid #006633;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Head Teacher Portal</h2>
+      <div>
+        <span id="headTeacherNameDisplay">Welcome, Head Teacher</span> |
+        <a
+          href="index.html"
+          style="color: white; text-decoration: underline"
+          onclick="localStorage.clear()"
+          >Logout</a
+        >
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <!-- 1. School Accounts & Payments Information -->
+        <div class="card">
+          <h3>School Accounts & Financials</h3>
+          <p>
+            Monitor received school fees and school financial records[cite: 1].
+          </p>
+          <div class="stat-box">
+            <strong>Total Revenue Collected:</strong> P 245,500.00<br />
+            <strong>Pending Accounts:</strong> 12 Students
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Payer / Parent</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>05/09/2026</td>
+                <td>Mpho Moloi</td>
+                <td>P 1,200.00</td>
+                <td>Verified</td>
+              </tr>
+              <tr>
+                <td>04/09/2026</td>
+                <td>Kabo Seabelo</td>
+                <td>P 1,200.00</td>
+                <td>Verified</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2. Approves Transfers (Students) -->
+        <div class="card">
+          <h3>Student Transfer Approvals</h3>
+          <p>
+            Review and process student transfer applications into or out of the
+            institution[cite: 1].
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Current Form</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Thabo Letsholathebe</td>
+                <td>Form 3</td>
+                <td>
+                  <button onclick="alert('Transfer Approved')">Approve</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Lesedi Khama</td>
+                <td>Form 2</td>
+                <td>
+                  <button onclick="alert('Transfer Approved')">Approve</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3 & 4. Announcements & Discussions -->
+        <div class="card">
+          <h3>School Communications</h3>
+          <p>
+            Broadcast institutional announcements and lead discussion
+            forums[cite: 1].
+          </p>
+          <form id="htAnnouncementForm">
+            <label>Announcement Broadcast:</label>
+            <textarea
+              rows="2"
+              placeholder="Message to school community..."
+              required
+            ></textarea>
+            <button type="submit">Broadcast Notice</button>
+          </form>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0" />
+          <form id="htDiscussionForm">
+            <label>Discussion Forum Thread:</label>
+            <input
+              type="text"
+              placeholder="Start or reply to staff thread..."
+              required
+            />
+            <button type="submit">Post to Forum</button>
+          </form>
+        </div>
+
+        <!-- 5 & 6. Views Overall School & Teachers Performance -->
+        <div class="card">
+          <h3>Performance Analytics</h3>
+          <p>
+            Inspect overall school performance metrics alongside teacher ratings
+            derived from class results[cite: 1].
+          </p>
+          <div class="stat-box">
+            <strong>School Pass Rate:</strong> 88.4%<br />
+            <strong>Top Performing Department:</strong> Sciences
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Teacher</th>
+                <th>Subject / Class</th>
+                <th>Avg Class Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dr. R. Tau</td>
+                <td>Form 4 Maths</td>
+                <td>91%</td>
+              </tr>
+              <tr>
+                <td>Ms. K. Motswasele</td>
+                <td>Form 2 English</td>
+                <td>84%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 7. Total Capacity & Teacher Workload -->
+        <div class="card">
+          <h3>Capacity & Workload Metrics</h3>
+          <p>
+            Evaluate total school and classroom capacities, teacher
+            availability, and individual workloads[cite: 1].
+          </p>
+          <div class="stat-box">
+            <strong>School Capacity Utilization:</strong> 82% (820/1000
+            Students)<br />
+            <strong>Available Teaching Staff:</strong> 34 Teachers<br />
+            <strong>Average Teacher Workload:</strong> 22 Periods/Week
+          </div>
+        </div>
+
+        <!-- 8. Apply for Transfer -->
+        <div class="card">
+          <h3>Head Teacher Transfer Application</h3>
+          <p>
+            Submit a formal transfer request to the regional
+            administration[cite: 1].
+          </p>
+          <form id="htTransferForm">
+            <label>Target School / Region:</label>
+            <select required>
+              <option value="">-- Select Destination --</option>
+              <option value="Naledi Senior Secondary">
+                Naledi Senior Secondary School
+              </option>
+              <option value="Lotsane Senior Secondary">
+                Lotsane Senior Secondary School
+              </option>
+            </select>
+            <label>Justification:</label>
+            <textarea
+              rows="2"
+              placeholder="Reason for transfer..."
+              required
+            ></textarea>
+            <button type="submit">Submit Transfer Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.username) {
+        document.getElementById("headTeacherNameDisplay").innerText =
+          `Welcome, ${user.username}`;
+      }
+
+      document
+        .getElementById("htAnnouncementForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Institutional announcement published successfully.");
+        });
+
+      document
+        .getElementById("htDiscussionForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Discussion thread updated.");
+        });
+
+      document
+        .getElementById("htTransferForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Transfer application submitted to Regional Office.");
+        });
+    </script>
+  </body>
+</html>
