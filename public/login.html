@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Login - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Staff Login</h2>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email Address:</label>
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="e.g. mompati@gov.bw"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Login</button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account? <a href="admin-login.html">Register here</a>
+      </p>
+    </div>
+
+    <script>
+      // Handle Login Submission
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = e.target.email.value;
+          const password = e.target.password.value;
+
+          try {
+            const response = await fetch("/api/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Login successful!");
+              // Redirect based on role or dashboard
+              window.location.href = "/teacher-dashboard.html";
+            } else {
+              alert("Login failed: " + (result.error || "Invalid credentials"));
+            }
+          } catch (err) {
+            console.error("Login error:", err);
+            alert("Network error. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>

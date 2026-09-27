@@ -96,10 +96,37 @@ app.post("/api/register", async (req, res) => {
       .json({ message: "User registered successfully", user: result.rows[0] });
   } catch (err) {
     console.error("Registration error:", err.message);
-    res
-      .status(500)
-      .json({
-        error: "Server error during registration. Email might already exist.",
-      });
+    res.status(500).json({
+      error: "Server error during registration. Email might already exist.",
+    });
+  }
+});
+// API: Staff Login
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const result = await pool.query("SELECT * FROM staff WHERE email = $1", [
+      email,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "User not found" });
+    }
+
+    const user = result.rows[0];
+
+    // Simple password check (matches text storage from registration)
+    if (user.password !== password) {
+      return res.status(400).json({ error: "Incorrect password" });
+    }
+
+    res.json({
+      message: "Login successful",
+      user: { id: user.id, name: user.full_name, role: user.staff_role },
+    });
+  } catch (err) {
+    console.error("Login server error:", err.message);
+    res.status(500).json({ error: "Server error during login" });
   }
 });
