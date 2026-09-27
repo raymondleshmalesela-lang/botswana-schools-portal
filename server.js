@@ -130,3 +130,49 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ error: "Server error during login" });
   }
 });
+// API: Register Student
+app.post("/api/student-register", async (req, res) => {
+  try {
+    const {
+      national_id,
+      full_name,
+      password,
+      grade_level,
+      school_placement,
+      academic_term,
+      subjects,
+    } = req.body;
+
+    const query = `
+            INSERT INTO students (national_id, full_name, password, grade_level, school_placement, academic_term, subjects_enrolled)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id, full_name;
+        `;
+
+    const values = [
+      national_id,
+      full_name,
+      password,
+      grade_level,
+      school_placement,
+      academic_term,
+      subjects,
+    ];
+    const result = await pool.query(query, values);
+
+    res
+      .status(201)
+      .json({
+        message: "Student registered successfully",
+        student: result.rows[0],
+      });
+  } catch (err) {
+    console.error("Student registration error:", err.message);
+    res
+      .status(500)
+      .json({
+        error:
+          "Server error during student registration. National ID might already be used.",
+      });
+  }
+});

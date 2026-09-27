@@ -3,360 +3,101 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Public Portal - Botswana Schools</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f7f6;
-        margin: 0;
-        padding: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 90vh;
-      }
-      .container {
-        background: white;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 450px;
-      }
-      h2 {
-        color: #006633;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .form-group {
-        margin-bottom: 15px;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        font-size: 14px;
-      }
-      input,
-      select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-      button {
-        background-color: #006633;
-        color: white;
-        border: none;
-        padding: 10px;
-        width: 100%;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-top: 10px;
-      }
-      button:hover {
-        background-color: #004d26;
-      }
-      .switch-text {
-        text-align: center;
-        margin-top: 15px;
-        font-size: 14px;
-      }
-      .switch-text a {
-        color: #006633;
-        text-decoration: none;
-        cursor: pointer;
-        font-weight: bold;
-      }
-      .admin-link {
-        text-align: center;
-        margin-top: 20px;
-        border-top: 1px solid #eee;
-        padding-top: 15px;
-        font-size: 13px;
-      }
-      .admin-link a {
-        color: #555;
-        text-decoration: none;
-        font-weight: bold;
-      }
-      .error-msg {
-        color: #d9534f;
-        font-size: 14px;
-        text-align: center;
-        margin-top: 10px;
-      }
-      .success-msg {
-        color: #006633;
-        font-size: 14px;
-        text-align: center;
-        margin-top: 10px;
-      }
-      #studentFields {
-        background: #f9f9f9;
-        padding: 15px;
-        border-radius: 6px;
-        border: 1px solid #e1e1e1;
-        margin-bottom: 15px;
-      }
-    </style>
+    <title>Student Registration - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
-      <!-- Public Login Form -->
-      <div id="loginCard">
-        <h2>Citizen Portal Login</h2>
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="loginEmail">Email Address:</label>
-            <input type="email" id="loginEmail" required />
-          </div>
-          <div class="form-group">
-            <label for="loginPassword">Password:</label>
-            <input type="password" id="loginPassword" required />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-        <p id="loginMsg" class="error-msg"></p>
-        <div class="switch-text">
-          Don't have an account? <a onclick="toggleForms()">Register here</a>
+      <h2>Student Registration</h2>
+
+      <form id="studentRegisterForm">
+        <div class="form-group">
+          <label>National ID / Omang Number:</label>
+          <input
+            type="text"
+            name="national_id"
+            required
+            placeholder="e.g. 098765432"
+          />
         </div>
-        <div class="admin-link">
-          <a href="admin-login.html"
-            >🔒 Switch to Internal Staff Admin Portal</a
+
+        <div class="form-group">
+          <label>Full Name:</label>
+          <input
+            type="text"
+            name="full_name"
+            required
+            placeholder="e.g. Lesego Motho"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Create password"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Grade / Form Level:</label>
+          <select name="grade_level" id="gradeLevel" required>
+            <option value="">-- Select Grade Level --</option>
+            <option value="Primary Level">Primary Level (Standard 1-7)</option>
+            <option value="Secondary Level">Secondary Level (Form 1-5)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Select School:</label>
+          <select
+            name="school_placement"
+            id="schoolPlacement"
+            disabled
+            required
           >
+            <option value="">-- Select Grade Level First --</option>
+          </select>
         </div>
-      </div>
 
-      <!-- Public Registration Form with School, Grade, Term & Document Upload -->
-      <div id="registerCard" style="display: none">
-        <h2>Citizen Registration</h2>
-        <form id="registerForm" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="regUsername">Full Name:</label>
-            <input type="text" id="regUsername" required />
-          </div>
-          <div class="form-group">
-            <label for="regEmail">Email Address:</label>
-            <input type="email" id="regEmail" required />
-          </div>
-          <div class="form-group">
-            <label for="regNationalId">National ID / Omang Number:</label>
-            <input
-              type="text"
-              id="regNationalId"
-              placeholder="e.g. 123456789"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="regPassword">Password:</label>
-            <input type="password" id="regPassword" required />
-          </div>
-          <div class="form-group">
-            <label for="regRole">Account Type:</label>
-            <select id="regRole" onchange="handleRoleChange()" required>
-              <option value="">-- Choose Account Type --</option>
-              <option value="student">Student</option>
-              <option value="parent">Parent / Guardian</option>
-            </select>
-          </div>
-
-          <!-- Conditional Fields for Students (School, Grade, Term & Document Upload) -->
-          <div id="studentFields" style="display: none">
-            <div class="form-group">
-              <label for="regSchool">Select School:</label>
-              <select id="regSchool">
-                <option value="">-- Loading Schools --</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="regGrade">Grade Level:</label>
-              <select id="regGrade">
-                <option value="Form 1">Form 1</option>
-                <option value="Form 2">Form 2</option>
-                <option value="Form 3">Form 3</option>
-                <option value="Form 4">Form 4</option>
-                <option value="Form 5">Form 5</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="regTerm">Academic Term:</label>
-              <select id="regTerm">
-                <option value="Term 1">Term 1</option>
-                <option value="Term 2">Term 2</option>
-                <option value="Term 3">Term 3</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="regDocument"
-                >Verification Document (Birth Cert / ID - PDF/PNG/JPG):</label
-              >
-              <input
-                type="file"
-                id="regDocument"
-                accept=".pdf,.jpeg,.jpg,.png"
-              />
-            </div>
-          </div>
-
-          <button type="submit">Register Citizen Account</button>
-        </form>
-        <p id="regMsg" class="error-msg"></p>
-        <div class="switch-text">
-          Already have an account? <a onclick="toggleForms()">Login here</a>
+        <div class="form-group">
+          <label>Academic Term:</label>
+          <select name="academic_term" required>
+            <option value="Term 1">Term 1</option>
+            <option value="Term 2">Term 2</option>
+            <option value="Term 3">Term 3</option>
+          </select>
         </div>
-      </div>
+
+        <div class="form-group">
+          <label>Subjects to Register (Select all that apply):</label>
+          <div
+            id="student-subjects-box"
+            style="
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              max-height: 150px;
+              overflow-y: auto;
+              background-color: #fafafa;
+            "
+          >
+            <span style="color: #777">Select grade level first</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          Register Citizen Account
+        </button>
+      </form>
+      <p class="auth-switch">
+        Already registered? <a href="login.html">Login here</a>
+      </p>
     </div>
 
-    <script>
-      function toggleForms() {
-        const loginCard = document.getElementById("loginCard");
-        const registerCard = document.getElementById("registerCard");
-        if (loginCard.style.display === "none") {
-          loginCard.style.display = "block";
-          registerCard.style.display = "none";
-        } else {
-          loginCard.style.display = "none";
-          registerCard.style.display = "block";
-          loadSchoolsForRegistration();
-        }
-      }
-
-      function handleRoleChange() {
-        const role = document.getElementById("regRole").value;
-        const studentFields = document.getElementById("studentFields");
-        const docInput = document.getElementById("regDocument");
-
-        if (role === "student") {
-          studentFields.style.display = "block";
-          docInput.required = true;
-        } else {
-          studentFields.style.display = "none";
-          docInput.required = false;
-        }
-      }
-
-      async function loadSchoolsForRegistration() {
-        try {
-          const res = await fetch("/api/schools");
-          const schools = await res.json();
-          const schoolSelect = document.getElementById("regSchool");
-          schoolSelect.innerHTML =
-            '<option value="">-- Choose School --</option>' +
-            schools
-              .map(
-                (s) =>
-                  `<option value="${s.school_id}">${s.school_name} (${s.region})</option>`,
-              )
-              .join("");
-        } catch (err) {
-          console.error("Failed to load schools", err);
-        }
-      }
-
-      document
-        .getElementById("loginForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const email = document.getElementById("loginEmail").value;
-          const password = document.getElementById("loginPassword").value;
-          const msg = document.getElementById("loginMsg");
-
-          try {
-            const res = await fetch("/api/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email, password }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-              if (
-                [
-                  "teacher",
-                  "head_teacher",
-                  "regional_admin",
-                  "ministry_official",
-                ].includes(data.user.role)
-              ) {
-                msg.innerText =
-                  "Staff accounts must log in via the Internal Staff Admin Portal.";
-                return;
-              }
-              localStorage.setItem("user", JSON.stringify(data.user));
-              window.location.href = "student-dashboard.html";
-            } else {
-              msg.innerText = data.error;
-            }
-          } catch (err) {
-            msg.innerText = "Server connection failed.";
-          }
-        });
-
-      document
-        .getElementById("registerForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const msg = document.getElementById("regMsg");
-
-          // Use FormData to support file uploads alongside text fields
-          const formData = new FormData();
-          formData.append(
-            "username",
-            document.getElementById("regUsername").value,
-          );
-          formData.append("email", document.getElementById("regEmail").value);
-          formData.append(
-            "national_id",
-            document.getElementById("regNationalId").value,
-          );
-          formData.append(
-            "password",
-            document.getElementById("regPassword").value,
-          );
-
-          const role = document.getElementById("regRole").value;
-          formData.append("role", role);
-
-          if (role === "student") {
-            formData.append(
-              "school_id",
-              document.getElementById("regSchool").value,
-            );
-            formData.append(
-              "grade_level",
-              document.getElementById("regGrade").value,
-            );
-            formData.append("term", document.getElementById("regTerm").value);
-
-            const fileField = document.getElementById("regDocument");
-            if (fileField.files[0]) {
-              formData.append("document", fileField.files[0]);
-            }
-          }
-
-          try {
-            const res = await fetch("/api/register", {
-              method: "POST",
-              body: formData, // Note: Content-Type header is omitted so the browser sets multipart boundary automatically
-            });
-            const data = await res.json();
-            if (res.ok) {
-              msg.className = "success-msg";
-              msg.innerText =
-                "Registration successful! Redirecting to login...";
-              setTimeout(() => toggleForms(), 1500);
-            } else {
-              msg.className = "error-msg";
-              msg.innerText = data.error;
-            }
-          } catch (err) {
-            msg.className = "error-msg";
-            msg.innerText = "Server connection failed.";
-          }
-        });
-    </script>
+    <!-- Student Script logic -->
+    <script src="student-script.js"></script>
   </body>
 </html>
