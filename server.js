@@ -173,18 +173,19 @@ app.post("/api/student-register", async (req, res) => {
   }
 });
 
-// API: Student Login
+// API: Student/Citizen Login
 app.post("/api/student-login", async (req, res) => {
   try {
-    const { national_id, password } = req.body;
+    const { identifier, password } = req.body;
 
+    // Check by national_id or email
     const result = await pool.query(
-      "SELECT * FROM students WHERE national_id = $1",
-      [national_id],
+      "SELECT * FROM students WHERE national_id = $1 OR full_name ILIKE $1",
+      [identifier],
     );
 
     if (result.rows.length === 0) {
-      return res.status(400).json({ error: "Student account not found" });
+      return res.status(400).json({ error: "Citizen account not found" });
     }
 
     const student = result.rows[0];
@@ -198,7 +199,7 @@ app.post("/api/student-login", async (req, res) => {
       student: { id: student.id, name: student.full_name },
     });
   } catch (err) {
-    console.error("Student login server error:", err.message);
-    res.status(500).json({ error: "Server error during student login" });
+    console.error("Citizen login server error:", err.message);
+    res.status(500).json({ error: "Server error during login" });
   }
 });

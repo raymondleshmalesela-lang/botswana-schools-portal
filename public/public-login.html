@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Login - Botswana Schools Portal</title>
+    <title>Citizen Portal Login - Botswana Schools Portal</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
-      <h2>Student / Citizen Login</h2>
+      <h2>Citizen Portal Login</h2>
 
       <form id="publicLoginForm">
         <div class="form-group">
-          <label>National ID / Omang Number:</label>
+          <label>National ID / Omang Number or Email:</label>
           <input
             type="text"
-            name="national_id"
+            name="identifier"
             required
-            placeholder="e.g. 098765432"
+            placeholder="Enter National ID or Email"
           />
         </div>
 
@@ -37,6 +37,11 @@
       <p class="auth-switch">
         Don't have an account? <a href="index.html">Register here</a>
       </p>
+      <p class="auth-switch" style="margin-top: 10px">
+        <a href="admin-login.html" style="color: #555; font-size: 14px"
+          >Switch to Internal Staff Admin Portal</a
+        >
+      </p>
     </div>
 
     <script>
@@ -45,14 +50,14 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
-          const national_id = e.target.national_id.value;
+          const identifier = e.target.identifier.value;
           const password = e.target.password.value;
 
           try {
             const response = await fetch("/api/student-login", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ national_id, password }),
+              body: JSON.stringify({ identifier, password }),
             });
 
             const result = await response.json();
