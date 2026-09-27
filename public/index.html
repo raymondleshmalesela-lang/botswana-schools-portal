@@ -27,7 +27,7 @@
             type="text"
             name="full_name"
             required
-            placeholder="e.g. Lesego Motho"
+            placeholder="e.g. Maduo Smarts"
           />
         </div>
 
@@ -41,6 +41,7 @@
           />
         </div>
 
+        <!-- Grade / Form Level (Triggers student-script.js) -->
         <div class="form-group">
           <label>Grade / Form Level:</label>
           <select name="grade_level" id="gradeLevel" required>
@@ -50,6 +51,7 @@
           </select>
         </div>
 
+        <!-- Assigned School Placement (Populated dynamically) -->
         <div class="form-group">
           <label>Select School:</label>
           <select
@@ -71,6 +73,7 @@
           </select>
         </div>
 
+        <!-- Subjects to Register (Populated dynamically via checkboxes) -->
         <div class="form-group">
           <label>Subjects to Register (Select all that apply):</label>
           <div
@@ -92,12 +95,13 @@
           Register Citizen Account
         </button>
       </form>
+
       <p class="auth-switch">
         Already registered? <a href="login.html">Login here</a>
       </p>
     </div>
 
-    <!-- Student Script logic -->
+    <!-- Dedicated Student Script File -->
     <script src="student-script.js"></script>
   </body>
 </html>
