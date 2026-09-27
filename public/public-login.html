@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Student / Citizen Login</h2>
+
+      <form id="publicLoginForm">
+        <div class="form-group">
+          <label>National ID / Omang Number:</label>
+          <input
+            type="text"
+            name="national_id"
+            required
+            placeholder="e.g. 098765432"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Login</button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account? <a href="index.html">Register here</a>
+      </p>
+    </div>
+
+    <script>
+      document
+        .getElementById("publicLoginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const national_id = e.target.national_id.value;
+          const password = e.target.password.value;
+
+          try {
+            const response = await fetch("/api/student-login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ national_id, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Login successful!");
+              window.location.href = "/student-dashboard.html";
+            } else {
+              alert("Login failed: " + (result.error || "Invalid credentials"));
+            }
+          } catch (err) {
+            console.error("Login error:", err);
+            alert("Network error. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>

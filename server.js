@@ -160,19 +160,45 @@ app.post("/api/student-register", async (req, res) => {
     ];
     const result = await pool.query(query, values);
 
-    res
-      .status(201)
-      .json({
-        message: "Student registered successfully",
-        student: result.rows[0],
-      });
+    res.status(201).json({
+      message: "Student registered successfully",
+      student: result.rows[0],
+    });
   } catch (err) {
     console.error("Student registration error:", err.message);
-    res
-      .status(500)
-      .json({
-        error:
-          "Server error during student registration. National ID might already be used.",
-      });
+    res.status(500).json({
+      error:
+        "Server error during student registration. National ID might already be used.",
+    });
+  }
+});
+
+// API: Student Login
+app.post("/api/student-login", async (req, res) => {
+  try {
+    const { national_id, password } = req.body;
+
+    const result = await pool.query(
+      "SELECT * FROM students WHERE national_id = $1",
+      [national_id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Student account not found" });
+    }
+
+    const student = result.rows[0];
+
+    if (student.password !== password) {
+      return res.status(400).json({ error: "Incorrect password" });
+    }
+
+    res.json({
+      message: "Login successful",
+      student: { id: student.id, name: student.full_name },
+    });
+  } catch (err) {
+    console.error("Student login server error:", err.message);
+    res.status(500).json({ error: "Server error during student login" });
   }
 });

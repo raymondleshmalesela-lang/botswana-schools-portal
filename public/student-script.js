@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
           alert("Student registered successfully!");
-          window.location.href = "/admin-login.html";
+          window.location.href = "/public-login.html";
         } else {
           alert("Registration failed: " + (result.error || "Unknown error"));
         }
