@@ -112,20 +112,16 @@ app.post("/api/student-register", async (req, res) => {
     ];
     const result = await pool.query(query, values);
 
-    res
-      .status(201)
-      .json({
-        message: "Student registered successfully",
-        student: result.rows[0],
-      });
+    res.status(201).json({
+      message: "Student registered successfully",
+      student: result.rows[0],
+    });
   } catch (err) {
     console.error("Student registration error:", err.message);
-    res
-      .status(500)
-      .json({
-        error:
-          "Server error during student registration. National ID might already be used.",
-      });
+    res.status(500).json({
+      error:
+        "Server error during student registration. National ID might already be used.",
+    });
   }
 });
 
@@ -161,4 +157,9 @@ app.post("/api/student-login", async (req, res) => {
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
