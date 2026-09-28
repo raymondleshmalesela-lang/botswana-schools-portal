@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Login - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Staff Portal Login</h2>
+      <p style="text-align: center; color: #666; margin-bottom: 20px">
+        Teachers & Head Teachers Login
+      </p>
+
+      <form id="staffLoginForm">
+        <div class="form-group">
+          <label>Identifier (Email or Staff ID):</label>
+          <input
+            type="text"
+            name="identifier"
+            required
+            placeholder="e.g. teacher1@schools.gov.bw"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Login</button>
+      </form>
+
+      <p class="auth-switch" style="margin-top: 15px">
+        <a href="admin-login.html">Administrator Login</a>
+      </p>
+      <p class="auth-switch" style="margin-top: 10px">
+        <a href="index.html">Back to Home</a>
+      </p>
+    </div>
+
+    <script>
+      document
+        .getElementById("staffLoginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const identifier = e.target.identifier.value;
+          const password = e.target.password.value;
+
+          try {
+            const response = await fetch("/api/staff-login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ identifier, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Login successful!");
+
+              // Route dynamically based on staff role returned from backend
+              if (result.staff.role === "headteacher") {
+                window.location.href = "/headteacher-dashboard.html";
+              } else {
+                window.location.href = "/teacher-dashboard.html";
+              }
+            } else {
+              alert("Login failed: " + (result.error || "Invalid credentials"));
+            }
+          } catch (err) {
+            console.error("Staff login error:", err);
+            alert("Network error during login.");
+          }
+        });
+    </script>
+  </body>
+</html>

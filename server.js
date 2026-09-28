@@ -360,3 +360,37 @@ app.post("/api/admin/create-staff", async (req, res) => {
     res.status(500).json({ error: "Server error during staff creation." });
   }
 });
+// API: Staff Login (Teachers & Head Teachers)
+app.post("/api/staff-login", async (req, res) => {
+  try {
+    const { identifier, password } = req.body;
+
+    const result = await pool.query(
+      "SELECT * FROM staff_users WHERE identifier = $1",
+      [identifier],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Staff account not found." });
+    }
+
+    const staff = result.rows[0];
+
+    if (staff.password !== password) {
+      return res.status(400).json({ error: "Incorrect password." });
+    }
+
+    res.json({
+      message: "Login successful",
+      staff: {
+        id: staff.id,
+        full_name: staff.full_name,
+        role: staff.role,
+      },
+    });
+  } catch (err) {
+    console.error("Staff login server error:", err.message);
+    res.status(500).json({ error: "Server error during staff login." });
+  }
+});
+v;
