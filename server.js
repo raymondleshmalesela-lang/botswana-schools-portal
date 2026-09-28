@@ -312,3 +312,51 @@ app.post("/api/headteacher/preschool-class", async (req, res) => {
     res.status(500).json({ error: "Error creating class" });
   }
 });
+// Ensure staff/users table supports roles (or use dedicated staff tables depending on your setup)
+pool
+  .query(
+    `
+    CREATE TABLE IF NOT EXISTS staff_users (
+        id SERIAL PRIMARY KEY,
+        full_name VARCHAR(255) NOT NULL,
+        identifier VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL -- 'teacher' or 'headteacher'
+    );
+`,
+  )
+  .catch((err) =>
+    console.error("Error creating staff_users table:", err.message),
+  );
+
+// API: Administrator creates a teacher or headteacher account
+app.post("/api/admin/create-staff", async (req, res) => {
+  try {
+    const { full_name, identifier, password, role } = req.body;
+
+    if (!["teacher", "headteacher"].includes(role)) {
+      return res.status(400).json({ error: "Invalid staff role specified." });
+    }
+
+    const query = `
+            INSERT INTO staff_users (full_name, identifier, password, role)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id, full_name, role;
+        `;
+
+    const result = await pool.query(query, [
+      full_name,
+      identifier,
+      password,
+      role,
+    ]);
+
+    res.status(201).json({
+      message: `${role.toUpperCase()} account created successfully`,
+      staff: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Admin staff creation error:", err.message);
+    res.status(500).json({ error: "Server error during staff creation." });
+  }
+});
