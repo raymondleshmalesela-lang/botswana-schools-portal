@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parent Login - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Parent Portal Login</h2>
+
+      <form id="parentLoginForm">
+        <div class="form-group">
+          <label>Full Name:</label>
+          <input
+            type="text"
+            name="full_name"
+            required
+            placeholder="e.g. Mompati Smarts"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Login</button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account?
+        <a href="parent-registration.html">Register here</a>
+      </p>
+      <p class="auth-switch" style="margin-top: 10px">
+        <a href="index.html">Back to Home</a>
+      </p>
+    </div>
+
+    <script>
+      document
+        .getElementById("parentLoginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const full_name = e.target.full_name.value;
+          const password = e.target.password.value;
+
+          try {
+            const response = await fetch("/api/parent-login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ full_name, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Login successful!");
+              window.location.href = "/parent-dashboard.html";
+            } else {
+              alert("Login failed: " + (result.error || "Invalid credentials"));
+            }
+          } catch (err) {
+            console.error("Login error:", err);
+            alert("Network error. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>

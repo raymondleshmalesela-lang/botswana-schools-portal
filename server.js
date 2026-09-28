@@ -177,14 +177,42 @@ app.post("/api/parent-register", async (req, res) => {
     const values = [full_name, identifier, password, child_national_id];
     const result = await pool.query(query, values);
 
-    res
-      .status(201)
-      .json({
-        message: "Parent registered successfully",
-        parent: result.rows[0],
-      });
+    res.status(201).json({
+      message: "Parent registered successfully",
+      parent: result.rows[0],
+    });
   } catch (err) {
     console.error("Parent registration error:", err.message);
     res.status(500).json({ error: "Server error during parent registration." });
+  }
+});
+// API: Parent Login
+app.post("/api/parent-login", async (req, res) => {
+  try {
+    const { full_name, password } = req.body;
+
+    // Check parent by full name (case-insensitive)
+    const result = await pool.query(
+      "SELECT * FROM parents WHERE full_name ILIKE $1",
+      [full_name],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Parent account not found" });
+    }
+
+    const parent = result.rows[0];
+
+    if (parent.password !== password) {
+      return res.status(400).json({ error: "Incorrect password" });
+    }
+
+    res.json({
+      message: "Login successful",
+      parent: { id: parent.id, name: parent.full_name },
+    });
+  } catch (err) {
+    console.error("Parent login server error:", err.message);
+    res.status(500).json({ error: "Server error during parent login" });
   }
 });
