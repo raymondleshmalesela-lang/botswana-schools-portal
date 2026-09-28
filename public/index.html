@@ -3,15 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Botswana Schools Portal - Welcome</title>
+    <title>Botswana Schools Portal - Home</title>
     <link rel="stylesheet" href="landing-style.css" />
   </head>
   <body>
+    <!-- Header Navigation -->
     <header>
       <a href="index.html" class="logo">🇧🇼 SCHOOL</a>
       <nav>
         <ul class="nav-links">
-          <li><a href="#">Home</a></li>
+          <li><a href="index.html">Home</a></li>
           <li><a href="#">About Us</a></li>
           <li><a href="#">Programs</a></li>
           <li><a href="#">Blog</a></li>
@@ -20,41 +21,44 @@
       </nav>
       <div class="header-auth">
         <a href="public-login.html" class="sign-in">Sign In / Sign Up</a>
-        <a href="student-registration.html" class="btn-register"
+        <a href="student-registration.html" class="btn-register-top"
           >REGISTRATION</a
         >
       </div>
     </header>
 
-    <section class="hero">
-      <div class="hero-wave"></div>
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1>BOTSWANA<br />SCHOOL<br />PORTAL</h1>
-          <p class="subtext">Now Open for Student & Parent Registration</p>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-wave-bg"></div>
+      <div class="hero-container">
+        <!-- Left Text Content -->
+        <div class="hero-text-content">
+          <h1>SCHOOL<br />ADMISSION</h1>
+          <p class="subtitle">Now Open for Student & Parent Registration</p>
 
-          <div class="hero-buttons">
-            <a href="student-registration.html" class="btn-enroll"
-              >STUDENT REGISTER</a
+          <div class="hero-action-buttons">
+            <a href="student-registration.html" class="btn-main-action"
+              >STUDENT ENROLL</a
             >
-            <a
-              href="parent-registration.html"
-              class="btn-enroll"
-              style="background-color: #004d26; color: white"
+            <a href="parent-registration.html" class="btn-secondary-action"
               >PARENT REGISTER</a
             >
           </div>
 
-          <p>Need help? Call Us Now:</p>
-          <div class="contact-info">
+          <div class="contact-box">
+            <span>Call For More Info</span>
             <strong>📞 +267 0000 0000</strong>
-            <span>support@bwschools.gov.bw</span>
+            <div style="margin-top: 5px">support@bwschools.gov.bw</div>
           </div>
         </div>
 
-        <div class="hero-image-container">
-          <div class="placeholder-image">
-            <span>School Image<br />Placeholder</span>
+        <!-- Right Image Placeholder -->
+        <div class="hero-image-wrapper">
+          <div class="circle-image-placeholder">
+            <span>School Image</span>
+            <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.7"
+              >Placeholder</span
+            >
           </div>
         </div>
       </div>
