@@ -309,5 +309,100 @@
           alert("Transfer application submitted to Regional Office.");
         });
     </script>
+
+    <div class="container" style="margin-top: 30px">
+      <h3>Manage Pre-School Classes & Capacity</h3>
+
+      <!-- Form to create a new class -->
+      <form id="createClassForm" style="margin-bottom: 20px">
+        <div class="form-group">
+          <label>Class Name:</label>
+          <input
+            type="text"
+            id="className"
+            required
+            placeholder="e.g. Class 1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Maximum Learner Capacity:</label>
+          <input
+            type="number"
+            id="maxCapacity"
+            required
+            placeholder="e.g. 30"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Open New Class</button>
+      </form>
+
+      <h4>Active Classes & Live Seats</h4>
+      <div id="adminClassList">
+        <!-- Live status will load here -->
+      </div>
+    </div>
+
+    <script>
+      // 1. Handle form submission to create a class
+      document
+        .getElementById("createClassForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const class_name = document.getElementById("className").value;
+          const max_capacity = document.getElementById("maxCapacity").value;
+
+          try {
+            const response = await fetch("/api/headteacher/preschool-class", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ class_name, max_capacity }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Class opened successfully!");
+              document.getElementById("createClassForm").reset();
+              loadAdminClasses(); // Refresh the list
+            } else {
+              alert("Failed: " + (result.error || "Unknown error"));
+            }
+          } catch (err) {
+            console.error("Error:", err);
+            alert("Network error while creating class.");
+          }
+        });
+
+      // 2. Load current classes to monitor capacities
+      async function loadAdminClasses() {
+        try {
+          const res = await fetch("/api/preschool-classes");
+          const classes = await res.json();
+
+          const container = document.getElementById("adminClassList");
+          if (classes.length === 0) {
+            container.innerHTML = "<p>No classes configured yet.</p>";
+            return;
+          }
+
+          container.innerHTML = "";
+          classes.forEach((cls) => {
+            const div = document.createElement("div");
+            div.style.cssText =
+              "border: 1px solid #ddd; padding: 10px; margin-bottom: 8px; border-radius: 4px; display: flex; justify-content: space-between;";
+            div.innerHTML = `<span><strong>${cls.class_name}</strong></span> <span>Enrolled: ${cls.enrolled_count} / ${cls.max_capacity} seats</span>`;
+            container.appendChild(div);
+          });
+        } catch (err) {
+          console.error("Error loading classes:", err);
+        }
+      }
+
+      // Load list on page open
+      loadAdminClasses();
+    </script>
   </body>
 </html>

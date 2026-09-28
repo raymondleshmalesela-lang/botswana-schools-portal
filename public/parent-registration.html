@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="formContainer">
       <h2>Parent / Guardian Registration</h2>
 
       <form id="parentRegisterForm">
@@ -42,16 +42,26 @@
         </div>
 
         <div class="form-group">
+          <label>Registration Type:</label>
+          <select id="regType" required onchange="toggleChildInput()">
+            <option value="existing">Link Existing Student ID</option>
+            <option value="preschool">
+              New Pre-School Admission (Starting School)
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group" id="existingChildGroup">
           <label>Child's National ID (To Link Account):</label>
           <input
             type="text"
             name="child_national_id"
-            required
+            id="child_national_id"
             placeholder="Enter student's National ID"
           />
         </div>
 
-        <button type="submit" class="btn-submit">
+        <button type="submit" class="btn-submit" id="submitBtn">
           Register Parent Account
         </button>
       </form>
@@ -65,13 +75,38 @@
     </div>
 
     <script>
+      function toggleChildInput() {
+        const regType = document.getElementById("regType").value;
+        const existingGroup = document.getElementById("existingChildGroup");
+        const childInput = document.getElementById("child_national_id");
+        const submitBtn = document.getElementById("submitBtn");
+
+        if (regType === "preschool") {
+          existingGroup.style.display = "none";
+          childInput.removeAttribute("required");
+          submitBtn.textContent = "Next: Choose Pre-School Class";
+        } else {
+          existingGroup.style.display = "block";
+          childInput.setAttribute("required", "true");
+          submitBtn.textContent = "Register Parent Account";
+        }
+      }
+
       document
         .getElementById("parentRegisterForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          const regType = document.getElementById("regType").value;
           const formData = new FormData(e.target);
           const data = Object.fromEntries(formData.entries());
+
+          if (regType === "preschool") {
+            // Save basic parent info temporarily and proceed to seat selection page
+            sessionStorage.setItem("pendingParent", JSON.stringify(data));
+            window.location.href = "/preschool-selection.html";
+            return;
+          }
 
           try {
             const response = await fetch("/api/parent-register", {
@@ -84,7 +119,7 @@
 
             if (response.ok) {
               alert("Parent registered successfully!");
-              window.location.href = "/public-login.html";
+              window.location.href = "/index.html";
             } else {
               alert(
                 "Registration failed: " + (result.error || "Unknown error"),

@@ -216,3 +216,99 @@ app.post("/api/parent-login", async (req, res) => {
     res.status(500).json({ error: "Server error during parent login" });
   }
 });
+// Ensure pre-school configuration table exists
+pool
+  .query(
+    `
+    CREATE TABLE IF NOT EXISTS preschool_classes (
+        id SERIAL PRIMARY KEY,
+        class_name VARCHAR(100) NOT NULL,
+        max_capacity INT NOT NULL,
+        enrolled_count INT DEFAULT 0
+    );
+`,
+  )
+  .catch((err) =>
+    console.error("Error creating preschool_classes table:", err.message),
+  );
+
+// API: Get open pre-school classes and seats status
+app.get("/api/preschool-classes", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM preschool_classes ORDER BY id ASC",
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Server error fetching classes" });
+  }
+});
+
+// API: Register Parent with Pre-school selection
+app.post("/api/parent-register-preschool", async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const { full_name, identifier, password, class_id } = req.body;
+
+    // Check seat availability
+    const classCheck = await client.query(
+      "SELECT * FROM preschool_classes WHERE id = $1",
+      [class_id],
+    );
+    if (classCheck.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({ error: "Selected class not found" });
+    }
+
+    const cls = classCheck.rows[0];
+    if (cls.enrolled_count >= cls.max_capacity) {
+      await client.query("ROLLBACK");
+      return res.status(400).json({ error: "Selected class is fully booked." });
+    }
+
+    // Insert Parent
+    const parentQuery = `
+            INSERT INTO parents (full_name, identifier, password, child_national_id)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id;
+        `;
+    const parentRes = await client.query(parentQuery, [
+      full_name,
+      identifier,
+      password,
+      "PRESCHOOL-PENDING",
+    ]);
+
+    // Increment class enrolled count
+    await client.query(
+      "UPDATE preschool_classes SET enrolled_count = enrolled_count + 1 WHERE id = $1",
+      [class_id],
+    );
+
+    await client.query("COMMIT");
+    res.status(201).json({ message: "Pre-school registration successful" });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Preschool registration error:", err.message);
+    res.status(500).json({ error: "Server error during registration" });
+  }
+});
+// API: Head Teacher configures a pre-school class
+app.post("/api/headteacher/preschool-class", async (req, res) => {
+  try {
+    const { class_name, max_capacity } = req.body;
+
+    const result = await pool.query(
+      "INSERT INTO preschool_classes (class_name, max_capacity, enrolled_count) VALUES ($1, $2, 0) RETURNING *",
+      [class_name, max_capacity],
+    );
+
+    res
+      .status(201)
+      .json({ message: "Class created successfully", class: result.rows[0] });
+  } catch (err) {
+    console.error("Error creating class:", err.message);
+    res.status(500).json({ error: "Error creating class" });
+  }
+});
