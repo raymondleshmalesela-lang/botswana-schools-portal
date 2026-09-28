@@ -1,111 +1,64 @@
 const express = require("express");
-const { Pool } = require("pg");
 const path = require("path");
+const { Pool } = require("pg");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-// PostgreSQL Connection Pool using Render's DATABASE_URL
+// PostgreSQL connection pool configuration for Render
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// ==========================================
-// API ROUTES FOR DYNAMIC DROPDOWNS
-// ==========================================
+// Root route to explicitly serve student registration (index.html)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
-// Get Schools by Teaching Level
+// API: Fetch schools based on teaching/grade level
 app.get("/api/schools", async (req, res) => {
   try {
-    const level = req.query.level;
-    if (!level) {
-      return res.status(400).json({ error: "Level parameter is required" });
-    }
-    const result = await pool.query("SELECT * FROM schools WHERE level = $1", [
-      level,
-    ]);
+    const { level } = req.query;
+    const query = level
+      ? "SELECT * FROM schools WHERE level = $1"
+      : "SELECT * FROM schools";
+    const values = level ? [level] : [];
+    const result = await pool.query(query, values);
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching schools:", err.message);
-    res.status(500).json({ error: "Server error while fetching schools" });
+    res.status(500).json({ error: "Server error fetching schools" });
   }
 });
 
-// Get Subjects by Teaching Level
+// API: Fetch subjects based on teaching/grade level
 app.get("/api/subjects", async (req, res) => {
   try {
-    const level = req.query.level;
-    if (!level) {
-      return res.status(400).json({ error: "Level parameter is required" });
-    }
-    const result = await pool.query("SELECT * FROM subjects WHERE level = $1", [
-      level,
-    ]);
+    const { level } = req.query;
+    const query = level
+      ? "SELECT * FROM subjects WHERE level = $1"
+      : "SELECT * FROM subjects";
+    const values = level ? [level] : [];
+    const result = await pool.query(query, values);
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching subjects:", err.message);
-    res.status(500).json({ error: "Server error while fetching subjects" });
+    res.status(500).json({ error: "Server error fetching subjects" });
   }
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-// API: Register Staff/Teacher
-app.post("/api/register", async (req, res) => {
-  try {
-    const {
-      full_name,
-      email,
-      password,
-      staff_role,
-      teaching_level,
-      school_placement,
-      subjects,
-    } = req.body;
-
-    // Simple insert query (Note: In production, hash passwords with bcrypt!)
-    const query = `
-            INSERT INTO staff (full_name, email, password, staff_role, teaching_level, school_placement, subjects_taught)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING id, full_name, email;
-        `;
-
-    const values = [
-      full_name,
-      email,
-      password,
-      staff_role,
-      teaching_level,
-      school_placement,
-      subjects,
-    ];
-    const result = await pool.query(query, values);
-
-    res
-      .status(201)
-      .json({ message: "User registered successfully", user: result.rows[0] });
-  } catch (err) {
-    console.error("Registration error:", err.message);
-    res.status(500).json({
-      error: "Server error during registration. Email might already exist.",
-    });
-  }
-});
 // API: Staff Login
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const result = await pool.query("SELECT * FROM staff WHERE email = $1", [
       email,
     ]);
@@ -115,8 +68,6 @@ app.post("/api/login", async (req, res) => {
     }
 
     const user = result.rows[0];
-
-    // Simple password check (matches text storage from registration)
     if (user.password !== password) {
       return res.status(400).json({ error: "Incorrect password" });
     }
@@ -130,6 +81,7 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ error: "Server error during login" });
   }
 });
+
 // API: Register Student
 app.post("/api/student-register", async (req, res) => {
   try {
@@ -160,16 +112,20 @@ app.post("/api/student-register", async (req, res) => {
     ];
     const result = await pool.query(query, values);
 
-    res.status(201).json({
-      message: "Student registered successfully",
-      student: result.rows[0],
-    });
+    res
+      .status(201)
+      .json({
+        message: "Student registered successfully",
+        student: result.rows[0],
+      });
   } catch (err) {
     console.error("Student registration error:", err.message);
-    res.status(500).json({
-      error:
-        "Server error during student registration. National ID might already be used.",
-    });
+    res
+      .status(500)
+      .json({
+        error:
+          "Server error during student registration. National ID might already be used.",
+      });
   }
 });
 
@@ -178,7 +134,6 @@ app.post("/api/student-login", async (req, res) => {
   try {
     const { identifier, password } = req.body;
 
-    // Check by national_id or email
     const result = await pool.query(
       "SELECT * FROM students WHERE national_id = $1 OR full_name ILIKE $1",
       [identifier],
@@ -189,7 +144,6 @@ app.post("/api/student-login", async (req, res) => {
     }
 
     const student = result.rows[0];
-
     if (student.password !== password) {
       return res.status(400).json({ error: "Incorrect password" });
     }
@@ -202,4 +156,9 @@ app.post("/api/student-login", async (req, res) => {
     console.error("Citizen login server error:", err.message);
     res.status(500).json({ error: "Server error during login" });
   }
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
