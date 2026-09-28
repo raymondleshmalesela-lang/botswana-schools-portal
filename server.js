@@ -163,3 +163,28 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+// API: Register Parent
+app.post("/api/parent-register", async (req, res) => {
+  try {
+    const { full_name, identifier, password, child_national_id } = req.body;
+
+    const query = `
+            INSERT INTO parents (full_name, identifier, password, child_national_id)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id, full_name;
+        `;
+
+    const values = [full_name, identifier, password, child_national_id];
+    const result = await pool.query(query, values);
+
+    res
+      .status(201)
+      .json({
+        message: "Parent registered successfully",
+        parent: result.rows[0],
+      });
+  } catch (err) {
+    console.error("Parent registration error:", err.message);
+    res.status(500).json({ error: "Server error during parent registration." });
+  }
+});

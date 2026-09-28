@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parent Registration - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Parent / Guardian Registration</h2>
+
+      <form id="parentRegisterForm">
+        <div class="form-group">
+          <label>Full Name:</label>
+          <input
+            type="text"
+            name="full_name"
+            required
+            placeholder="e.g. Mompati Smarts"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>National ID / Omang Number or Phone:</label>
+          <input
+            type="text"
+            name="identifier"
+            required
+            placeholder="e.g. 123456789 or Phone"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Create password"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Child's National ID (To Link Account):</label>
+          <input
+            type="text"
+            name="child_national_id"
+            required
+            placeholder="Enter student's National ID"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">
+          Register Parent Account
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Already registered? <a href="public-login.html">Login here</a>
+      </p>
+      <p class="auth-switch" style="margin-top: 10px">
+        <a href="index.html">Back to Home</a>
+      </p>
+    </div>
+
+    <script>
+      document
+        .getElementById("parentRegisterForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const data = Object.fromEntries(formData.entries());
+
+          try {
+            const response = await fetch("/api/parent-register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Parent registered successfully!");
+              window.location.href = "/public-login.html";
+            } else {
+              alert(
+                "Registration failed: " + (result.error || "Unknown error"),
+              );
+            }
+          } catch (err) {
+            console.error("Registration error:", err);
+            alert("Network error while registering parent.");
+          }
+        });
+    </script>
+  </body>
+</html>
