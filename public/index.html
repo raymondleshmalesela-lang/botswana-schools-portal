@@ -4,80 +4,83 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Botswana Schools Portal - Home</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-      .portal-grid {
-        display: grid;
-        gap: 20px;
-        margin-top: 20px;
-      }
-      .portal-card {
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 8px;
-        background: #f9f9f9;
-        text-align: center;
-      }
-      .portal-card h3 {
-        margin-bottom: 10px;
-        color: #006633;
-      }
-      .btn-group {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 15px;
-        flex-wrap: wrap;
-      }
-      .btn-portal {
-        padding: 10px 15px;
-        background-color: #006633;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 14px;
-      }
-      .btn-portal:hover {
-        background-color: #004d26;
-      }
-    </style>
   </head>
   <body>
-    <div class="container" style="max-width: 600px">
+    <div
+      style="
+        max-width: 600px;
+        margin: 40px auto;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      "
+    >
       <h2>Botswana Schools Portal</h2>
-      <p style="text-align: center; color: #666">
-        Select your portal to continue:
-      </p>
+      <p>Select your portal to continue:</p>
 
-      <div class="portal-grid">
-        <!-- Student & Parent Section -->
-        <div class="portal-card">
-          <h3>Student & Parent Portal</h3>
-          <p>
-            Access login selection, student registration, and parent
-            registration.
-          </p>
-          <div class="btn-group">
-            <a href="public-login.html" class="btn-portal">Login</a>
-            <a href="student-registration.html" class="btn-portal"
-              >Student Register</a
-            >
-            <a href="parent-registration.html" class="btn-portal"
-              >Parent Register</a
-            >
-          </div>
+      <div
+        style="
+          border: 1px solid #ccc;
+          padding: 20px;
+          margin-bottom: 20px;
+          border-radius: 5px;
+        "
+      >
+        <h3>Student & Parent Portal</h3>
+        <p>Access registrations and portal logins.</p>
+        <div
+          style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px"
+        >
+          <a
+            href="public-login.html"
+            style="
+              padding: 8px 15px;
+              background: #006633;
+              color: white;
+              text-decoration: none;
+              border-radius: 4px;
+            "
+            >Login</a
+          >
+          <a
+            href="student-registration.html"
+            style="
+              padding: 8px 15px;
+              background: #006633;
+              color: white;
+              text-decoration: none;
+              border-radius: 4px;
+            "
+            >Student Register</a
+          >
+          <a
+            href="parent-registration.html"
+            style="
+              padding: 8px 15px;
+              background: #006633;
+              color: white;
+              text-decoration: none;
+              border-radius: 4px;
+            "
+            >Parent Register</a
+          >
         </div>
+      </div>
 
-        <!-- Staff & Admin Section -->
-        <div class="portal-card">
-          <h3>Internal Staff & Admin Portal</h3>
-          <p>
-            Access teacher workspaces, dashboards, and official administration
-            tools.
-          </p>
-          <div class="btn-group">
-            <a href="admin-login.html" class="btn-portal">Staff Login</a>
-          </div>
+      <div style="border: 1px solid #ccc; padding: 20px; border-radius: 5px">
+        <h3>Internal Staff & Admin Portal</h3>
+        <p>Access teacher workspaces, dashboards, and administration tools.</p>
+        <div style="margin-top: 15px">
+          <a
+            href="admin-login.html"
+            style="
+              padding: 8px 15px;
+              background: #006633;
+              color: white;
+              text-decoration: none;
+              border-radius: 4px;
+            "
+            >Staff Login</a
+          >
         </div>
       </div>
     </div>
