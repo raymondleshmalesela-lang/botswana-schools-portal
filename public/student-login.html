@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login - Botswana Schools Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Student Portal Login</h2>
+
+      <form id="studentLoginForm">
+        <div class="form-group">
+          <label>National ID / Omang Number or Email:</label>
+          <input
+            type="text"
+            name="identifier"
+            required
+            placeholder="Enter National ID or Email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Login</button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account?
+        <a href="student-registration.html">Register here</a>
+      </p>
+      <p class="auth-switch" style="margin-top: 10px">
+        <a href="public-login.html">Back to Login Selection</a>
+      </p>
+    </div>
+
+    <script>
+      document
+        .getElementById("studentLoginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const identifier = e.target.identifier.value;
+          const password = e.target.password.value;
+
+          try {
+            const response = await fetch("/api/student-login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ identifier, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert("Login successful!");
+              window.location.href = "/student-dashboard.html";
+            } else {
+              alert("Login failed: " + (result.error || "Invalid credentials"));
+            }
+          } catch (err) {
+            console.error("Login error:", err);
+            alert("Network error. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>
