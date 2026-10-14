@@ -35,7 +35,22 @@ pool.connect((err, client, release) => {
 // API ROUTES
 // ==========================================
 
-// 1. Staff & Admin Login Endpoint
+// 1. Get list of schools for dropdown selection
+app.get("/api/schools", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, school_name FROM schools ORDER BY school_name ASC",
+    );
+    res.json({ success: true, schools: result.rows });
+  } catch (error) {
+    console.error("Error fetching schools:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch schools" });
+  }
+});
+
+// 2. Staff & Admin Login Endpoint
 app.post("/api/staff-login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -66,6 +81,7 @@ app.post("/api/staff-login", async (req, res) => {
         username: user.username,
         role: user.role,
         fullName: user.full_name,
+        schoolId: user.school_id,
       },
       redirectUrl,
     });
@@ -75,7 +91,7 @@ app.post("/api/staff-login", async (req, res) => {
   }
 });
 
-// 2. Pre-School Seat Capacity Management Endpoint
+// 3. Pre-School Seat Capacity Management Endpoint (View)
 app.get("/api/capacity", async (req, res) => {
   try {
     const query =
@@ -90,7 +106,112 @@ app.get("/api/capacity", async (req, res) => {
   }
 });
 
-// 3. Fallback Route: Serve index.html for root requests
+// 4. Update Seat Capacity (Teacher / Admin Dashboard)
+app.post("/api/update-capacity", async (req, res) => {
+  const { classId, totalSeats, occupiedSeats } = req.body;
+
+  try {
+    const query = `
+      UPDATE preschool_capacity 
+      SET total_seats = COALESCE($1, total_seats), 
+          occupied_seats = COALESCE($2, occupied_seats) 
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [
+      totalSeats,
+      occupiedSeats,
+      classId,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Class capacity record not found." });
+    }
+
+    res.json({
+      success: true,
+      message: "Capacity updated successfully!",
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error updating capacity:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to update capacity." });
+  }
+});
+
+// 5. Student / Parent Registration / Application Submission Endpoint
+app.post("/api/register-student", async (req, res) => {
+  const {
+    studentName,
+    dateOfBirth,
+    guardianName,
+    guardianContact,
+    schoolId,
+    className,
+  } = req.body;
+
+  try {
+    const query = `
+      INSERT INTO applications (student_name, date_of_birth, guardian_name, guardian_contact, school_id, class_name, status)
+      VALUES ($1, $2, $3, $4, $5, $6, 'Pending')
+      RETURNING id, student_name, status;
+    `;
+    const values = [
+      studentName,
+      dateOfBirth,
+      guardianName,
+      guardianContact,
+      schoolId,
+      className,
+    ];
+    const result = await pool.query(query, values);
+
+    res.status(201).json({
+      success: true,
+      message: "Application submitted successfully!",
+      application: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error registering student application:", error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Failed to submit application. Please try again.",
+      });
+  }
+});
+
+// 6. Check Application Status Endpoint
+app.get("/api/check-status/:id", async (req, res) => {
+  const appId = req.params.id;
+
+  try {
+    const query = `
+      SELECT a.id, a.student_name, a.status, s.school_name, a.class_name, a.created_at
+      FROM applications a
+      JOIN schools s ON a.school_id = s.id
+      WHERE a.id = $1;
+    `;
+    const result = await pool.query(query, [appId]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Application ID not found." });
+    }
+
+    res.json({ success: true, application: result.rows[0] });
+  } catch (error) {
+    console.error("Error checking status:", error);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+});
+
+// 7. Fallback Route: Serve index.html for root requests
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
