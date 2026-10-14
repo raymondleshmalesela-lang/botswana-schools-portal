@@ -37,10 +37,20 @@ pool.connect((err, client, release) => {
 
 // 1. Get list of schools for dropdown selection
 app.get("/api/schools", async (req, res) => {
+  const schoolType = req.query.type; // Optional filter: ?type=Primary or ?type=Secondary
+
   try {
-    const result = await pool.query(
-      "SELECT id, school_name FROM schools ORDER BY school_name ASC",
-    );
+    let query = "SELECT id, school_name, school_type FROM schools";
+    let params = [];
+
+    if (schoolType) {
+      query += " WHERE school_type = $1";
+      params.push(schoolType);
+    }
+
+    query += " ORDER BY school_name ASC";
+
+    const result = await pool.query(query, params);
     res.json({ success: true, schools: result.rows });
   } catch (error) {
     console.error("Error fetching schools:", error);
@@ -176,12 +186,10 @@ app.post("/api/register-student", async (req, res) => {
     });
   } catch (error) {
     console.error("Error registering student application:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to submit application. Please try again.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit application. Please try again.",
+    });
   }
 });
 
